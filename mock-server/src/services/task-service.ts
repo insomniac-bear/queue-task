@@ -2,24 +2,26 @@ import { STATUSES } from '../helpers/const';
 import { createTask, randomStatus } from '../helpers/utilities';
 
 import type { Task } from '../types/task.type';
-import type { SseClient } from '../types/sse-client.type';
+import type { WebsocketClient } from '../types/ws.type';
 import type { TaskStatus } from '../types/statuses.type';
 
 export class TaskService {
   private tasks: Map<string, Task>;
-  private clients: SseClient[];
+  private clients: Set<WebsocketClient>;
   private interval: NodeJS.Timeout | null = null;
 
   constructor(tasks: Map<string, Task>) {
     this.tasks = tasks;
-    this.clients = [];
+    this.clients = new Set()
     this.startSimulation();
   }
 
   private broadcast(event: string, data: unknown): void {
+    const message = JSON.stringify({ event, data });
     this.clients.forEach(client => {
-      client.res.write(`event: ${event}\n`);
-      client.res.write(`data: ${JSON.stringify(data)}\n\n`);
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
     });
   }
 
@@ -71,21 +73,18 @@ export class TaskService {
     return this.tasks.get(id);
   }
 
-  public addClient(client: SseClient): void {
-    this.clients.push(client);
+  public addClient(client: WebsocketClient): void {
+    this.clients.add(client);
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify({ event: 'init', data: this.getAllTasks() }));
+    }
   }
 
-  public removeClient(clientId: number): void {
-    this.clients = this.clients.filter(c => c.id !== clientId);
-  }
-
-  public sendInitData(res: any): void {
-    const initialData = this.getAllTasks();
-    res.write(`event: init\n`);
-    res.write(`data: ${JSON.stringify(initialData)}\n\n`);
+  public removeClient(client: WebsocketClient): void {
+    this.clients.delete(client);
   }
 
   public getClientCount(): number {
-    return this.clients.length;
+    return this.clients.size;
   }
 }

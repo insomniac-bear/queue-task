@@ -31,30 +31,5 @@ export function createTaskRouter(taskService: TaskService): Router {
     }
   });
 
-  /**
-   * GET /tasks/events
-   * @summary Полуение всех задач в режиме реального времени
-   */
-  router.get('/events', (req: Request, res: Response) => {
-
-    res.writeHead(200, {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
-    });
-    res.write('\n');
-
-    const clientId = Date.now();
-    const client = { id: clientId, res };
-    taskService.addClient(client);
-
-    taskService.sendInitData(res);
-
-    req.on('close', () => {
-      taskService.removeClient(clientId);
-      console.log('Клиент отключился, осталось клиентов:', taskService.getClientCount());
-    });
-  });
-
   return router;
 }
