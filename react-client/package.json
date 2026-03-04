@@ -1,8 +1,12 @@
 {
-  "name": "react-client",
+  "name": "client-for-task-queue",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "author": "Kirill Cherepanov",
+  "repository": {
+    "url": "https://github.com/insomniac-bear/queue-task/tree/main"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

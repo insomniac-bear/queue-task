@@ -53,6 +53,6 @@ process.on('SIGINT', shutdown);
 
 server.listen(PORT, () => {
   console.log(`Мок аггрегатор запущен на порту ${PORT}`);
-  console.log('REST API доступен по адресу http://localhost:3000/tasks');
-  console.log('WebSocket API доступен по адресу ws://localhost:3000/ws');
+  console.log(`REST API доступен по адресу http://localhost:${PORT}/tasks`);
+  console.log(`WebSocket API доступен по адресу ws://localhost:${PORT}/ws`);
 });

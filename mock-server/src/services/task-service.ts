@@ -31,7 +31,7 @@ export class TaskService {
     if (action < 0.4) {
       const task = createTask();
       this.tasks.set(task.id, task);
-      this.broadcast('create', task);
+      this.broadcast('task_created', task);
       console.log('Создана задача:', task);
     } else if (action < 0.8 && this.tasks.size > 0) {
       const ids = Array.from(this.tasks.keys());
@@ -43,13 +43,13 @@ export class TaskService {
       } while (newStatus === task.status && STATUSES.length > 1);
       task.status = newStatus;
       this.tasks.set(randomId, task);
-      this.broadcast('update', task);
+      this.broadcast('task_updated', task);
       console.log('Обновлена задача:', task);
     } else if (this.tasks.size > 0) {
       const ids = Array.from(this.tasks.keys());
       const randomId = ids[Math.floor(Math.random() * ids.length)];
       this.tasks.delete(randomId);
-      this.broadcast('delete', { id: randomId });
+      this.broadcast('task_deleted', { id: randomId });
       console.log('Удалена задача с id:', randomId);
     }
   }
@@ -76,7 +76,7 @@ export class TaskService {
   public addClient(client: WebsocketClient): void {
     this.clients.add(client);
     if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify({ event: 'init', data: this.getAllTasks() }));
+      client.send(JSON.stringify({ event: 'init', data: 'OK' }));
     }
   }
 
