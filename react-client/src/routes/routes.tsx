@@ -16,5 +16,8 @@ export const router = createBrowserRouter([
         element: <Statistics />,
       },
     ],
+    errorElement: (
+      <p>Произошла непредвиденная ошибка. Попробуйте перезагрузить страницу</p>
+    ),
   },
 ]);
