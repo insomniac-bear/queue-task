@@ -7,9 +7,13 @@ import { add, change, initial, remove } from './statistic';
 
 const taskAdapter = createEntityAdapter<TaskResponse>();
 
+const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost';
+const WS_HOST = import.meta.env.VITE_WS_HOST || 'ws://localhost';
+const PORT = import.meta.env.VITE_API_PORT || '3000';
+
 export const tasksApi = createApi({
   reducerPath: 'tasksApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/tasks' }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${API_HOST}:${PORT}/tasks` }),
   endpoints: (builder) => ({
     getAllTasks: builder.query<EntityState<SnakeToCamelKeys<TaskResponse>, string>, void>({
       query: () => '/',
@@ -35,7 +39,7 @@ export const tasksApi = createApi({
         _arg,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved, dispatch }
       ) {
-        const ws = new WebSocket('ws://localhost:3000/ws');
+        const ws = new WebSocket(`${WS_HOST}:${PORT}/ws`);
         try {
           await cacheDataLoaded;
 
