@@ -1,0 +1,28 @@
+.task {
+  display: flex;
+  gap: 5px;
+  padding: 5px 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 10px;
+}
+
+.taskStatus__completed {
+  color: #40f358;
+}
+
+.taskStatus__in_progress {
+  color: #c4b667;
+}
+
+.taskStatus__failed {
+  color: #c46a67;
+}
+
+.taskStatus__pending {
+  color: #677dc4;
+}
+
+.taskStatus__archived {
+  color: #ccc;
+}

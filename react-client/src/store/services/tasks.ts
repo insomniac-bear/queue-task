@@ -29,11 +29,11 @@ export const tasksApi = createApi({
           const listener = (event: MessageEvent) => {
             const data: TaskMessage = JSON.parse(event.data);
 
-            if (data.event !== 'task_deleted') {
+            if (data.event === 'task_created' || data.event === 'task_updated') {
               updateCachedData((draft) => {
                 taskAdapter.upsertOne(draft, data.data);
               });
-            } else {
+            } else if (data.event === 'task_deleted') {
               updateCachedData((draft) => {
                 taskAdapter.removeOne(draft, data.data.id);
               });

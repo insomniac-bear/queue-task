@@ -1,26 +1,27 @@
 import type { FC } from 'react';
 import { useGetAllTasksQuery } from '../store/services/tasks';
+import { TaskItem } from '../components/task-item/task-item';
+import { TaskList } from '../components/task-list/task-list';
+import { Title } from '../components/title/title';
 
 export const Main: FC = () => {
   const { data, error, isLoading } = useGetAllTasksQuery();
 
   return (
-    <div>
-      <h1>Список задач</h1>
+    <>
+      <Title>Список задач</Title>
       {isLoading && <p>Loading...</p>}
       {error && <p>Произошла ошибка во время загрузки данных</p>}
       {data && (
         <>
           <p>Всего задач: {data.ids.length}</p>
-          <ul>
+          <TaskList>
             {data.ids.map((id) => (
-              <li key={id}>
-                {data.entities[id].id} {data.entities[id].status}
-              </li>
+              <TaskItem key={id} id={id} status={data.entities[id].status} />
             ))}
-          </ul>
+          </TaskList>
         </>
       )}
-    </div>
+    </>
   );
 };
